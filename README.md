@@ -1,1 +1,1 @@
-B2B-event
+B2B-events
