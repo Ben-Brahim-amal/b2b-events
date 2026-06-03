@@ -1,1 +1,9 @@
-"node_modules/vendor/.env.localvar/cache/var/log/*.env.local.php" 
+vendor/ 
+var/cache/ 
+var/log/ 
+.env.local 
+.env.local.php 
+config/jwt/ 
+public/uploads/ 
+frontend/ 
+node_modules/ 
