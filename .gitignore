@@ -1,9 +1,8 @@
-vendor/ 
-var/cache/ 
-var/log/ 
-.env.local 
-.env.local.php 
-config/jwt/ 
-public/uploads/ 
-frontend/ 
-node_modules/ 
+vendor/
+var/cache/
+var/log/
+.env.local
+.env.local.php
+config/jwt/
+public/uploads/
+node_modules/

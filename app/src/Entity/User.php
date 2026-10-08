@@ -86,13 +86,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $companyName = null;
-
+    
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $companyDescription = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $companyAddress = null;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $organisationType = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $sector = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $companySize = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $companyWebsite = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $businessObjectives = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $sectors = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resetToken = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $resetTokenExpiresAt = null;
     
     public function __construct()
     {
@@ -170,4 +193,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getCompanyAddress(): ?string { return $this->companyAddress; }
     public function setCompanyAddress(?string $companyAddress): static { $this->companyAddress = $companyAddress; return $this; }
 
+    public function getOrganisationType(): ?string { return $this->organisationType; }
+    public function setOrganisationType(?string $organisationType): static { $this->organisationType = $organisationType; return $this; }
+
+    public function getSector(): ?string { return $this->sector; }
+    public function setSector(?string $sector): static { $this->sector = $sector; return $this; }
+
+    public function getCompanySize(): ?string { return $this->companySize; }
+    public function setCompanySize(?string $companySize): static { $this->companySize = $companySize; return $this; }
+
+    public function getCompanyWebsite(): ?string { return $this->companyWebsite; }
+    public function setCompanyWebsite(?string $companyWebsite): static { $this->companyWebsite = $companyWebsite; return $this; }
+
+    public function getBusinessObjectives(): ?array { return $this->businessObjectives; }
+    public function setBusinessObjectives(?array $businessObjectives): static { $this->businessObjectives = $businessObjectives; return $this; }
+
+    public function getSectors(): ?array { return $this->sectors; }
+    public function setSectors(?array $sectors): self { $this->sectors = $sectors; return $this; }
+
+    public function getResetToken(): ?string { return $this->resetToken; }
+    public function setResetToken(?string $resetToken): static { $this->resetToken = $resetToken; return $this; }
+
+    public function getResetTokenExpiresAt(): ?\DateTimeImmutable { return $this->resetTokenExpiresAt; }
+    public function setResetTokenExpiresAt(?\DateTimeImmutable $resetTokenExpiresAt): static { $this->resetTokenExpiresAt = $resetTokenExpiresAt; return $this; }
 }

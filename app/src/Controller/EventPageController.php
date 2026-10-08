@@ -68,7 +68,7 @@ class EventPageController extends AbstractController
         if (isset($data['content'])) $page->setContent($data['content']);
         if (isset($data['isActive'])) $page->setIsActive($data['isActive']);
         $this->em->flush();
-        return $this->json(['status' => 'success', 'message' => 'Page mise a jour.']);
+        return $this->json(['status' => 'success', 'message' => 'Page updated.']);
     }
 
     #[Route('/{eventId}/pages/{id}', name: 'api_event_pages_delete', methods: ['DELETE'])]
@@ -76,7 +76,7 @@ class EventPageController extends AbstractController
     {
         $this->em->remove($page);
         $this->em->flush();
-        return $this->json(['status' => 'success', 'message' => 'Page supprimee.']);
+        return $this->json(['status' => 'success', 'message' => 'Page deleted.']);
     }
 
     #[Route('/{id}/organisers', name: 'api_event_organisers_list', methods: ['GET'])]
@@ -121,7 +121,7 @@ class EventPageController extends AbstractController
     {
         $this->em->remove($organiser);
         $this->em->flush();
-        return $this->json(['status' => 'success', 'message' => 'Organisateur supprime.']);
+        return $this->json(['status' => 'success', 'message' => 'Organiser deleted.']);
     }
 
     //les routes Schedule
@@ -178,6 +178,6 @@ class EventPageController extends AbstractController
     {
         $this->em->remove($schedule);
         $this->em->flush();
-        return $this->json(['status' => 'success', 'message' => 'Session supprimee.']);
+        return $this->json(['status' => 'success', 'message' => 'Session deleted.']);
     }
 }

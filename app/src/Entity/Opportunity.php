@@ -18,8 +18,12 @@ class Opportunity
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Event::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?\App\Entity\Event $event = null;
+
     #[ORM\Column(length: 50)]
-    private string $type = 'product'; // produit, service, partenariat
+    private string $type = 'product';
 
     #[ORM\Column(length: 255)]
     private string $title = '';
@@ -44,6 +48,8 @@ class Opportunity
     public function getId(): ?int { return $this->id; }
     public function getUser(): ?User { return $this->user; }
     public function setUser(?User $user): static { $this->user = $user; return $this; }
+    public function getEvent(): ?\App\Entity\Event { return $this->event; }
+    public function setEvent(?\App\Entity\Event $event): static { $this->event = $event; return $this; }
     public function getType(): string { return $this->type; }
     public function setType(string $type): static { $this->type = $type; return $this; }
     public function getTitle(): string { return $this->title; }

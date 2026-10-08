@@ -37,6 +37,12 @@ class Registration
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $participationType = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $checkedIn = false;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $checkedInAt = null;
+
     public function getParticipationType(): ?string { return $this->participationType; }
     public function setParticipationType(?string $participationType): static { $this->participationType = $participationType; return $this; }
 
@@ -66,6 +72,12 @@ class Registration
     public function getProcessedBy(): ?User { return $this->processedBy; }
     public function setProcessedBy(?User $processedBy): static { $this->processedBy = $processedBy; return $this; }
 
+    public function isCheckedIn(): bool { return $this->checkedIn; }
+    public function setCheckedIn(bool $checkedIn): static { $this->checkedIn = $checkedIn; return $this; }
+
+    public function getCheckedInAt(): ?\DateTimeImmutable { return $this->checkedInAt; }
+    public function setCheckedInAt(?\DateTimeImmutable $checkedInAt): static { $this->checkedInAt = $checkedInAt; return $this; }
+   
     // Méthodes métier utiles
     public function accept(User $processedBy): static
     {

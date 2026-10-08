@@ -24,13 +24,13 @@ class RegistrationController extends AbstractController
 
         $notification = new Notification();
         $notification->setUser($registration->getUser());
-        $notification->setTitle('Inscription acceptee !');
-        $notification->setMessage('Votre inscription a "' . $registration->getEvent()->getTitle() . '" a ete acceptee.');
+        $notification->setTitle('Registration Accepted!');
+        $notification->setMessage('Your registration for "' . $registration->getEvent()->getTitle() . '" has been accepted.');
         $notification->setType('REGISTRATION_ACCEPTED');
         $this->em->persist($notification);
         $this->em->flush();
 
-        return $this->json(['status' => 'success', 'message' => 'Inscription acceptee.']);
+        return $this->json(['status' => 'success', 'message' => 'Registration accepted.']);
     }
 
     #[Route('/{id}/reject', name: 'api_registration_reject', methods: ['PUT'])]
@@ -41,13 +41,13 @@ class RegistrationController extends AbstractController
 
         $notification = new Notification();
         $notification->setUser($registration->getUser());
-        $notification->setTitle('Inscription refusee');
-        $notification->setMessage('Votre inscription a "' . $registration->getEvent()->getTitle() . '" a ete refusee.');
+        $notification->setTitle('Registration Declined');
+        $notification->setMessage('Your registration for "' . $registration->getEvent()->getTitle() . '" has been declined.');
         $notification->setType('REGISTRATION_REJECTED');
         $this->em->persist($notification);
         $this->em->flush();
 
-        return $this->json(['status' => 'success', 'message' => 'Inscription refusee.']);
+        return $this->json(['status' => 'success', 'message' => 'Registration declined.']);
     }
 
     #[Route('', name: 'api_registrations_list', methods: ['GET'])]

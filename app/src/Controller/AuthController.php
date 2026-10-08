@@ -69,7 +69,7 @@ class AuthController extends AbstractController
 
         $existingUser = $this->em->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
         if ($existingUser) {
-            return $this->json(['status' => 'error', 'message' => 'Email deja utilise.'], 409);
+            return $this->json(['status' => 'error', 'message' => 'Email already in use.'], 409);
         }
 
         $user->setPassword(
@@ -81,7 +81,7 @@ class AuthController extends AbstractController
 
         return $this->json([
             'status' => 'success',
-            'message' => 'Compte cree avec succes !',
+            'message' => 'Account created successfully!',
             'user' => [
                 'id' => $user->getId(),
                 'email' => $user->getEmail(),
@@ -100,22 +100,6 @@ class AuthController extends AbstractController
             new OA\Response(response: 401, description: "Token JWT manquant ou invalide"),
         ]
     )]
-    /*
-    #[Route('/me', name: 'api_me', methods: ['GET'])]
-    public function me(): JsonResponse
-    {
-        $user = $this->getUser();
-        return $this->json([
-            'id' => $user->getId(),
-            'email' => $user->getEmail(),
-            'firstName' => $user->getFirstName(),
-            'lastName' => $user->getLastName(),
-            'bio' => $user->getBio(),
-            'userRole' => $user->getUserRole(),
-            'roles' => $user->getRoles(),
-            'createdAt' => $user->getCreatedAt()->format('Y-m-d H:i:s'),
-        ]);
-    }*/
 
     #[Route('/me', name: 'api_me', methods: ['GET'])]
     public function me(): JsonResponse
@@ -134,11 +118,17 @@ class AuthController extends AbstractController
             'companyName' => $user->getCompanyName(),
             'companyDescription' => $user->getCompanyDescription(),
             'companyAddress' => $user->getCompanyAddress(),
+            'companyWebsite' => $user->getCompanyWebsite(),
+            'companySize' => $user->getCompanySize(),
+            'organisationType' => $user->getOrganisationType(),
+            'sector' => $user->getSector(),
+            'sectors' => $user->getSectors(),
+            'businessObjectives' => $user->getBusinessObjectives(),
             'userRole' => $user->getUserRole(),
             'roles' => $user->getRoles(),
         ]);
     }
-
+    
     #[Route('/profile', name: 'api_profile_update', methods: ['PUT'])]
     public function updateProfile(Request $request): JsonResponse
     {
@@ -155,9 +145,18 @@ class AuthController extends AbstractController
         if (isset($data['companyName'])) $user->setCompanyName($data['companyName']);
         if (isset($data['companyDescription'])) $user->setCompanyDescription($data['companyDescription']);
         if (isset($data['companyAddress'])) $user->setCompanyAddress($data['companyAddress']);
+        if (isset($data['sectors'])) $user->setSectors($data['sectors']);
+        // ← NOUVEAUX
+        if (isset($data['organisationType'])) $user->setOrganisationType($data['organisationType']);
+        if (isset($data['sector'])) $user->setSector($data['sector']);
+        if (isset($data['companySize'])) $user->setCompanySize($data['companySize']);
+        if (isset($data['companyWebsite'])) $user->setCompanyWebsite($data['companyWebsite']);
+        if (array_key_exists('businessObjectives', $data)) $user->setBusinessObjectives($data['businessObjectives']);
 
+        $user->setUpdatedAt(new \DateTimeImmutable());
         $this->em->flush();
-        return $this->json(['status' => 'success', 'message' => 'Profil mis a jour !']);
+
+        return $this->json(['status' => 'success', 'message' => 'Profile updated!']);
     }
 
     #[Route('/profile/password', name: 'api_profile_password', methods: ['PUT'])]
@@ -170,21 +169,21 @@ class AuthController extends AbstractController
         $data = json_decode($request->getContent(), true) ?? [];
 
         if (!isset($data['currentPassword']) || !isset($data['newPassword'])) {
-            return $this->json(['message' => 'Champs obligatoires manquants.'], 400);
+            return $this->json(['message' => 'Required fields missing.'], 400);
         }
 
         if (!$hasher->isPasswordValid($user, $data['currentPassword'])) {
-            return $this->json(['message' => 'Mot de passe actuel incorrect.'], 400);
+            return $this->json(['message' => 'Incorrect current password.'], 400);
         }
 
         if (strlen($data['newPassword']) < 6) {
-            return $this->json(['message' => 'Le nouveau mot de passe doit contenir au moins 6 caracteres.'], 400);
+            return $this->json(['message' => 'New password must be at least 6 characters.'], 400);
         }
 
         $user->setPassword($hasher->hashPassword($user, $data['newPassword']));
         $this->em->flush();
 
-        return $this->json(['status' => 'success', 'message' => 'Mot de passe modifie !']);
+        return $this->json(['status' => 'success', 'message' => 'Password changed!']);
     }
 
 }

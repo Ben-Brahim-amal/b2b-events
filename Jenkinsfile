@@ -33,6 +33,31 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Running SonarQube analysis...'
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                        docker exec b2b_sonarqube sonar-scanner \
+                            -Dsonar.projectKey=B2B-Events \
+                            -Dsonar.projectName="B2B Events" \
+                            -Dsonar.sources=app/src \
+                            -Dsonar.tests=app/tests \
+                            -Dsonar.exclusions=app/vendor/**,frontend/node_modules/**,app/var/**
+                    '''
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                echo 'Checking Quality Gate...'
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
         stage('Deploy') {
             steps {
                 echo 'Deploying...'
@@ -49,7 +74,7 @@ pipeline {
             echo 'Pipeline completed successfully!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Pipeline failed! Check SonarQube quality gate.'
         }
     }
 }

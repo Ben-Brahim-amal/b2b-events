@@ -3,17 +3,12 @@ import { useAuth } from '../context/AuthContext';
 
 export default function AuthCallback() {
     const { login } = useAuth();
-    const [status, setStatus] = useState('Connexion en cours...');
+    const [status, setStatus] = useState('Connecting...');
 
     useEffect(() => {
-        // Lire depuis le fragment (#) ou le query param (?)
         const hash = window.location.hash;
         const search = window.location.search;
-        
-        console.log('Hash:', hash);
-        console.log('Search:', search);
-        
-        // Essayer d'abord le fragment
+
         let token = null;
         if (hash.includes('token=')) {
             token = hash.split('token=')[1];
@@ -22,22 +17,20 @@ export default function AuthCallback() {
             token = params.get('token');
         }
 
-        console.log('Token:', token ? 'TROUVÉ' : 'NON TROUVÉ');
-
         if (token) {
-            setStatus('Token trouvé ! Connexion...');
+            setStatus('Token found! Logging in...');
             localStorage.setItem('token', token);
             login(token);
             setTimeout(() => {
                 window.location.href = '/dashboard';
             }, 300);
         } else {
-            setStatus('Erreur de connexion');
+            setStatus('Connection error');
             setTimeout(() => {
                 window.location.href = '/login';
             }, 2000);
         }
-    }, []);
+    }, [login]);
 
     return (
         <div style={{ textAlign: 'center', padding: '80px', fontFamily: 'Segoe UI', color: '#64748b' }}>

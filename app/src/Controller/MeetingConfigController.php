@@ -25,14 +25,14 @@ class MeetingConfigController extends AbstractController
     public function setConfig(Request $request): JsonResponse
     {
         if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
-            return $this->json(['message' => 'Acces refuse.'], 403);
+        return $this->json(['message' => 'Access denied.'], 403);
         }
 
         $data = json_decode($request->getContent(), true);
         $method = $data['method'] ?? 'manual';
 
         if (!in_array($method, ['manual', 'auto'])) {
-            return $this->json(['message' => 'Methode invalide.'], 400);
+        return $this->json(['message' => 'Invalid method.'], 400);
         }
 
         file_put_contents(self::$configFile, json_encode(['method' => $method]));

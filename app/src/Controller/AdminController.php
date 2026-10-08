@@ -37,7 +37,7 @@ class AdminController extends AbstractController
     {
         $this->em->remove($user);
         $this->em->flush();
-        return $this->json(['status' => 'success', 'message' => 'Utilisateur supprime.']);
+        return $this->json(['status' => 'success', 'message' => 'User deleted.']);
     }
 
     #[Route('/users/{id}/role', name: 'api_admin_update_role', methods: ['PUT'])]
@@ -47,7 +47,7 @@ class AdminController extends AbstractController
         if (isset($data['userRole'])) $user->setUserRole($data['userRole']);
         if (isset($data['roles'])) $user->setRoles($data['roles']);
         $this->em->flush();
-        return $this->json(['status' => 'success', 'message' => 'Role mis a jour.']);
+        return $this->json(['status' => 'success', 'message' => 'Role updated.']);
     }
 
     #[Route('/events', name: 'api_admin_events', methods: ['GET'])]
@@ -75,6 +75,6 @@ class AdminController extends AbstractController
     {
         $this->em->remove($event);
         $this->em->flush();
-        return $this->json(['status' => 'success', 'message' => 'Evenement supprime.']);
+        return $this->json(['status' => 'success', 'message' => 'Event deleted.']);
     }
 }

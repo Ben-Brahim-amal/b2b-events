@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Event;
 use App\Repository\MeetingRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,21 +36,26 @@ class Meeting
     #[ORM\Column(length: 20)]
     private string $status = 'pending';
 
-    // Message optionnel
+    #[ORM\Column(nullable: true)]
+    private ?int $tableNumber = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $roomNumber = null;
+
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $message = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    // Dans src/Entity/Meeting.php, ajoute ce champ :
-
     #[ORM\Column(length: 20)]
-    private string $meetingType = 'manual'; // 'manual' ou 'auto'
+    private string $meetingType = 'manual'; //manual ou auto
 
-    public function getMeetingType(): string { return $this->meetingType; }
-    public function setMeetingType(string $meetingType): static { $this->meetingType = $meetingType; return $this; }
-    
+    #[ORM\ManyToOne(targetEntity: Event::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Event $event = null;
+
+   
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -72,8 +78,22 @@ class Meeting
     public function getStatus(): string { return $this->status; }
     public function setStatus(string $status): static { $this->status = $status; return $this; }
 
+    
+    public function getTableNumber(): ?int { return $this->tableNumber; }
+    public function setTableNumber(?int $tableNumber): static { $this->tableNumber = $tableNumber; return $this; }
+    
+    public function getRoomNumber(): ?int { return $this->roomNumber; }
+    public function setRoomNumber(?int $roomNumber): static { $this->roomNumber = $roomNumber; return $this; }
+
     public function getMessage(): ?string { return $this->message; }
     public function setMessage(?string $message): static { $this->message = $message; return $this; }
 
     public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
+    
+    public function getMeetingType(): string { return $this->meetingType; }
+    public function setMeetingType(string $meetingType): static { $this->meetingType = $meetingType; return $this; }
+
+    public function getEvent(): ?Event { return $this->event; }
+    public function setEvent(?Event $event): static { $this->event = $event; return $this; }
+
 }

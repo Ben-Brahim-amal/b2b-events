@@ -18,11 +18,25 @@ class OpportunityController extends AbstractController
         private OpportunityRepository $repo
     ) {}
 
-    // GET toutes les opportunités (public)
+    // GET toutes les opportunités 
     #[Route('', name: 'api_opportunities_list', methods: ['GET'])]
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $opportunities = $this->repo->findBy([], ['createdAt' => 'DESC']);
+        $eventId = $request->query->get('eventId');
+
+        if ($eventId) {
+            $event = $this->em->getRepository(\App\Entity\Event::class)->find($eventId);
+            if (!$event) {
+                return $this->json(['message' => 'Event not found.'], 404);
+            }
+            $opportunities = $this->repo->findBy(
+                ['event' => $event],
+                ['createdAt' => 'DESC']
+            );
+        } else {
+            $opportunities = $this->repo->findBy([], ['createdAt' => 'DESC']);
+        }
+
         return $this->json(array_map([$this, 'format'], $opportunities));
     }
 
@@ -51,6 +65,11 @@ class OpportunityController extends AbstractController
         $opportunity->setDescription($data['description'] ?? null);
         $opportunity->setPhotos($data['photos'] ?? null);
 
+        if (!empty($data['eventId'])) {
+            $event = $this->em->getRepository(\App\Entity\Event::class)->find($data['eventId']);
+            if ($event) $opportunity->setEvent($event);
+        }
+
         $this->em->persist($opportunity);
         $this->em->flush();
 
@@ -65,7 +84,7 @@ class OpportunityController extends AbstractController
     public function update(Request $request, Opportunity $opportunity): JsonResponse
     {
         if ($opportunity->getUser() !== $this->getUser()) {
-            return $this->json(['message' => 'Acces refuse.'], 403);
+            return $this->json(['message' => 'Access denied.'], 403);
         }
 
         $data = json_decode($request->getContent(), true) ?? [];
@@ -89,13 +108,13 @@ class OpportunityController extends AbstractController
     public function delete(Opportunity $opportunity): JsonResponse
     {
         if ($opportunity->getUser() !== $this->getUser()) {
-            return $this->json(['message' => 'Acces refuse.'], 403);
+            return $this->json(['message' => 'Access denied.'], 403);
         }
 
         $this->em->remove($opportunity);
         $this->em->flush();
 
-        return $this->json(['status' => 'success', 'message' => 'Opportunite supprimee.']);
+        return $this->json(['status' => 'success', 'message' => 'Opportunity deleted.']);
     }
 
     private function format(Opportunity $o): array
@@ -107,6 +126,8 @@ class OpportunityController extends AbstractController
             'description' => $o->getDescription(),
             'photos' => $o->getPhotos() ?? [],
             'createdAt' => $o->getCreatedAt()->format('Y-m-d H:i:s'),
+            'eventId' => $o->getEvent()?->getId(),
+            'eventTitle' => $o->getEvent()?->getTitle(),
             'user' => [
                 'id' => $o->getUser()->getId(),
                 'firstName' => $o->getUser()->getFirstName(),

@@ -42,18 +42,24 @@ security:
             provider: app_user_provider
 
     access_control:
+        - { path: ^/api/chatbot, roles: PUBLIC_ACCESS }
         - { path: ^/api/doc, roles: PUBLIC_ACCESS }
         - { path: ^/api/doc.json, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/forgot-password, roles: PUBLIC_ACCESS }      # ← ajouter
+        - { path: ^/api/reset-password, roles: PUBLIC_ACCESS }       # ← ajouter
         - { path: ^/api/participants, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/events$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/events/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/events/\d+/participants$, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/opportunities$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/events/\d+/checkin-token, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/events/\d+/checkins, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/checkin, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/auth/google, roles: PUBLIC_ACCESS }
-
+        
 when@test:
     security:
         password_hashers:

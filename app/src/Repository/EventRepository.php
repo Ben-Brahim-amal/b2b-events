@@ -18,11 +18,8 @@ class EventRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('e')
             ->leftJoin('e.organizer', 'o')
             ->leftJoin('e.organisers', 'org')
-            ->leftJoin('e.registrations', 'r')
             ->leftJoin('e.pages', 'p')
-            ->addSelect('o', 'org', 'r', 'p')
-            ->where('e.status = :status')
-            ->setParameter('status', 'published')
+            ->addSelect('o', 'org', 'p')
             ->orderBy('e.createdAt', 'DESC')
             ->getQuery()
             ->getResult();

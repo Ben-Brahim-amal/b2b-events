@@ -17,6 +17,11 @@ export default function Profile() {
         avatar: '',
         currentPassword: '', newPassword: '', confirmPassword: '',
         companyName: '', companyDescription: '', companyAddress: '',
+        organisationType: '',
+        sector: '',
+        companySize: '',
+        companyWebsite: '',
+        businessObjectives: [],
     });
 
     useEffect(() => {
@@ -34,6 +39,11 @@ export default function Profile() {
                 companyName: res.data.companyName || '',
                 companyDescription: res.data.companyDescription || '',
                 companyAddress: res.data.companyAddress || '',
+                organisationType: res.data.organisationType || '',
+                sector: res.data.sector || '',
+                companySize: res.data.companySize || '',
+                companyWebsite: res.data.companyWebsite || '',
+                businessObjectives: res.data.businessObjectives || [],
             }));
             if (res.data.avatar) setAvatarPreview(`http://localhost:8081/uploads/${res.data.avatar}`);
         }).catch(() => {});
@@ -55,7 +65,7 @@ export default function Profile() {
                 setForm(prev => ({ ...prev, avatar: data.filename }));
                 setAvatarPreview(`http://localhost:8081/uploads/${data.filename}`);
             }
-        } catch { setMessage('❌ Erreur upload image.'); }
+        } catch { setMessage('❌ Image upload error.'); }
     };
 
     const handleSavePersonal = async () => {
@@ -72,23 +82,28 @@ export default function Profile() {
                 companyName: form.companyName,
                 companyDescription: form.companyDescription,
                 companyAddress: form.companyAddress,
+                organisationType: form.organisationType,
+                sector: form.sector,
+                companySize: form.companySize,
+                companyWebsite: form.companyWebsite,
+                businessObjectives: form.businessObjectives,
             });
-            setMessage('✅ Profil mis a jour avec succes !');
+            setMessage('✅ Profile updated successfully!');
         } catch (err) {
-            setMessage('❌ ' + (err.response?.data?.message || 'Erreur.'));
+            setMessage('❌ ' + (err.response?.data?.message || 'Error.'));
         }
         setSaving(false);
     };
 
     const handleChangePassword = async () => {
         if (!form.currentPassword || !form.newPassword || !form.confirmPassword) {
-            setMessage('❌ Remplissez tous les champs de mot de passe.'); return;
+            setMessage('❌ Please fill in all password fields.'); return;
         }
         if (form.newPassword !== form.confirmPassword) {
-            setMessage('❌ Les mots de passe ne correspondent pas.'); return;
+            setMessage('❌ Passwords do not match.'); return;
         }
         if (form.newPassword.length < 6) {
-            setMessage('❌ Le mot de passe doit contenir au moins 6 caracteres.'); return;
+            setMessage('❌ Password must be at least 6 characters.'); return;
         }
         setSaving(true);
         try {
@@ -96,10 +111,10 @@ export default function Profile() {
                 currentPassword: form.currentPassword,
                 newPassword: form.newPassword,
             });
-            setMessage('✅ Mot de passe modifie avec succes !');
+            setMessage('✅ Password changed successfully!');
             setForm(prev => ({ ...prev, currentPassword: '', newPassword: '', confirmPassword: '' }));
         } catch (err) {
-            setMessage('❌ ' + (err.response?.data?.message || 'Mot de passe actuel incorrect.'));
+            setMessage('❌ ' + (err.response?.data?.message || 'Incorrect current password.'));
         }
         setSaving(false);
     };
@@ -110,9 +125,9 @@ export default function Profile() {
     const labelStyle = { display: 'block', marginBottom: '6px', color: '#374151', fontSize: '13px', fontWeight: '600' };
 
     const sections = [
-        { key: 'personal',  label: 'Informations personnelles' },
-        { key: 'security',  label: 'Securite' },
-        { key: 'company',  label: 'Informations entreprise' },
+        { key: 'personal', label: 'Personal Information' },
+        { key: 'security', label: 'Security' },
+        { key: 'company', label: 'Company Information' },
     ];
 
     return (
@@ -123,23 +138,23 @@ export default function Profile() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
                     <div>
                         <h1 style={{ fontSize: '1.8rem', fontWeight: '800', color: '#1a1a2e', margin: 0 }}>
-                             Mon Profil
+                            My Profile
                         </h1>
                         <p style={{ color: '#64748b', marginTop: '6px', marginBottom: 0 }}>
-                            Gerez vos informations personnelles et parametres de compte
+                            Manage your personal information and account settings
                         </p>
                     </div>
-                    <button onClick={() => navigate('/dashboard')}
-                        style={{ padding: '10px 20px', background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '600', fontSize: '14px' }}>
-                        ← Dashboard
+                    <button onClick={() => navigate(-1)}
+                        style={{ padding: '10px 20px', background: 'none', color: '#64748b', border: 'none', cursor: 'pointer', fontWeight: '600', fontSize: '14px' }}>
+                        ← Back
                     </button>
                 </div>
 
                 {message && (
-                <div style={{ padding: '12px 16px', borderRadius: '10px', marginBottom: '24px', fontSize: '14px', background: message.startsWith('✅') ? '#d1fae5' : '#fee2e2', color: message.startsWith('✅') ? '#065f46' : '#991b1b', display: 'flex', justifyContent: 'space-between' }}>
-                    {message.replace('✅ ', '').replace('❌ ', '')}
-                    <button onClick={() => setMessage('')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', color: 'inherit' }}>×</button>
-                </div>
+                    <div style={{ padding: '12px 16px', borderRadius: '10px', marginBottom: '24px', fontSize: '14px', background: message.startsWith('✅') ? '#d1fae5' : '#fee2e2', color: message.startsWith('✅') ? '#065f46' : '#991b1b', display: 'flex', justifyContent: 'space-between' }}>
+                        {message.replace('✅ ', '').replace('❌ ', '')}
+                        <button onClick={() => setMessage('')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', color: 'inherit' }}>×</button>
+                    </div>
                 )}
 
                 <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: '24px', alignItems: 'flex-start' }}>
@@ -160,8 +175,8 @@ export default function Profile() {
                                     )}
                                 </div>
                                 <button onClick={() => document.getElementById('avatar-upload').click()}
-                                    style={{ position: 'absolute', bottom: '0', right: '0', background: '#7c3aed', color: 'white', border: '2px solid white', borderRadius: '50%', width: '26px', height: '26px', cursor: 'pointer', fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    ✏️
+                                    style={{ position: 'absolute', bottom: '0', right: '0', background: '#7c3aed', color: 'white', border: '2px solid white', borderRadius: '50%', width: '26px', height: '26px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700' }}>
+                                    +
                                 </button>
                                 <input id="avatar-upload" type="file" accept="image/*" style={{ display: 'none' }}
                                     onChange={e => handleAvatarUpload(e.target.files[0])} />
@@ -178,25 +193,25 @@ export default function Profile() {
                         <div style={{ background: 'white', borderRadius: '16px', padding: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
                             {sections.map(s => (
                                 <button key={s.key} onClick={() => { setActiveSection(s.key); setMessage(''); }}
-                                    style={{ width: '100%', padding: '12px 14px', marginBottom: '4px', border: 'none', borderRadius: '10px', cursor: 'pointer', textAlign: 'left', fontWeight: '600', fontSize: '14px', background: activeSection === s.key ? '#ede9fe' : 'transparent', color: activeSection === s.key ? '#7c3aed' : '#64748b', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <span>{s.icon}</span> {s.label}
+                                    style={{ width: '100%', padding: '12px 14px', marginBottom: '4px', border: 'none', borderRadius: '10px', cursor: 'pointer', textAlign: 'left', fontWeight: '600', fontSize: '14px', background: activeSection === s.key ? '#ede9fe' : 'transparent', color: activeSection === s.key ? '#7c3aed' : '#64748b' }}>
+                                    {s.label}
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    {/* Contenu */}
+                    {/* Content */}
                     <div style={{ background: 'white', borderRadius: '16px', padding: '32px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
 
-                        {/* ── Section Informations personnelles ── */}
+                        {/* Personal Information */}
                         {activeSection === 'personal' && (
                             <div>
                                 <h2 style={{ color: '#1a1a2e', margin: '0 0 24px', fontSize: '1.2rem', fontWeight: '800' }}>
-                                     Informations personnelles
+                                    Personal Information
                                 </h2>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                     <div>
-                                        <label style={labelStyle}>Prenom *</label>
+                                        <label style={labelStyle}>First Name *</label>
                                         <input type="text" value={form.firstName}
                                             onChange={e => setForm({ ...form, firstName: e.target.value })}
                                             style={inputStyle}
@@ -204,7 +219,7 @@ export default function Profile() {
                                             onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
                                     </div>
                                     <div>
-                                        <label style={labelStyle}>Nom *</label>
+                                        <label style={labelStyle}>Last Name *</label>
                                         <input type="text" value={form.lastName}
                                             onChange={e => setForm({ ...form, lastName: e.target.value })}
                                             style={inputStyle}
@@ -217,12 +232,12 @@ export default function Profile() {
                                     <label style={labelStyle}>Email</label>
                                     <input type="email" value={form.email} disabled
                                         style={{ ...inputStyle, background: '#f8fafc', color: '#94a3b8', cursor: 'not-allowed' }} />
-                                    <p style={{ color: '#94a3b8', fontSize: '12px', margin: '4px 0 0' }}>L'email ne peut pas etre modifie.</p>
+                                    <p style={{ color: '#94a3b8', fontSize: '12px', margin: '4px 0 0' }}>Email cannot be changed.</p>
                                 </div>
 
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                     <div>
-                                        <label style={labelStyle}> Telephone</label>
+                                        <label style={labelStyle}>Phone</label>
                                         <input type="text" value={form.phone}
                                             onChange={e => setForm({ ...form, phone: e.target.value.replace(/[^0-9+\-\s()]/g, '') })}
                                             placeholder="+216 XX XXX XXX"
@@ -231,10 +246,10 @@ export default function Profile() {
                                             onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
                                     </div>
                                     <div>
-                                        <label style={labelStyle}> Pays</label>
+                                        <label style={labelStyle}>Country</label>
                                         <input type="text" value={form.country}
                                             onChange={e => setForm({ ...form, country: e.target.value })}
-                                            placeholder="Tunisie"
+                                            placeholder="Tunisia"
                                             style={inputStyle}
                                             onFocus={e => e.target.style.borderColor = '#7c3aed'}
                                             onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
@@ -242,7 +257,7 @@ export default function Profile() {
                                 </div>
 
                                 <div style={{ marginBottom: '16px' }}>
-                                    <label style={labelStyle}> LinkedIn</label>
+                                    <label style={labelStyle}>LinkedIn</label>
                                     <input type="url" value={form.linkedin}
                                         onChange={e => setForm({ ...form, linkedin: e.target.value })}
                                         placeholder="https://linkedin.com/in/..."
@@ -252,10 +267,10 @@ export default function Profile() {
                                 </div>
 
                                 <div style={{ marginBottom: '24px' }}>
-                                    <label style={labelStyle}>Biographie</label>
+                                    <label style={labelStyle}>Biography</label>
                                     <textarea value={form.bio}
                                         onChange={e => setForm({ ...form, bio: e.target.value })}
-                                        placeholder="Parlez de vous, votre parcours, vos objectifs..."
+                                        placeholder="Tell us about yourself, your background, your goals..."
                                         rows={4}
                                         style={{ ...inputStyle, resize: 'vertical' }}
                                         onFocus={e => e.target.style.borderColor = '#7c3aed'}
@@ -264,19 +279,19 @@ export default function Profile() {
 
                                 <button onClick={handleSavePersonal} disabled={saving}
                                     style={{ padding: '12px 32px', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '700', fontSize: '15px' }}>
-                                    {saving ? 'Sauvegarde...' : ' Sauvegarder'}
+                                    {saving ? 'Saving...' : 'Save'}
                                 </button>
                             </div>
                         )}
 
-                        {/* ── Section Securite ── */}
+                        {/* Security */}
                         {activeSection === 'security' && (
                             <div>
                                 <h2 style={{ color: '#1a1a2e', margin: '0 0 24px', fontSize: '1.2rem', fontWeight: '800' }}>
-                                    Changer le mot de passe
+                                    Change Password
                                 </h2>
                                 <div style={{ marginBottom: '16px' }}>
-                                    <label style={labelStyle}>Mot de passe actuel *</label>
+                                    <label style={labelStyle}>Current Password *</label>
                                     <input type="password" value={form.currentPassword}
                                         onChange={e => setForm({ ...form, currentPassword: e.target.value })}
                                         placeholder="••••••••"
@@ -285,19 +300,19 @@ export default function Profile() {
                                         onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
                                 </div>
                                 <div style={{ marginBottom: '16px' }}>
-                                    <label style={labelStyle}>Nouveau mot de passe *</label>
+                                    <label style={labelStyle}>New Password *</label>
                                     <input type="password" value={form.newPassword}
                                         onChange={e => setForm({ ...form, newPassword: e.target.value })}
-                                        placeholder="Minimum 6 caracteres"
+                                        placeholder="Minimum 6 characters"
                                         style={inputStyle}
                                         onFocus={e => e.target.style.borderColor = '#7c3aed'}
                                         onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
                                     {form.newPassword && form.newPassword.length < 6 && (
-                                        <p style={{ color: '#ef4444', fontSize: '12px', margin: '4px 0 0' }}>Minimum 6 caracteres</p>
+                                        <p style={{ color: '#ef4444', fontSize: '12px', margin: '4px 0 0' }}>Minimum 6 characters</p>
                                     )}
                                 </div>
                                 <div style={{ marginBottom: '24px' }}>
-                                    <label style={labelStyle}>Confirmer le nouveau mot de passe *</label>
+                                    <label style={labelStyle}>Confirm New Password *</label>
                                     <input type="password" value={form.confirmPassword}
                                         onChange={e => setForm({ ...form, confirmPassword: e.target.value })}
                                         placeholder="••••••••"
@@ -305,56 +320,178 @@ export default function Profile() {
                                         onFocus={e => e.target.style.borderColor = '#7c3aed'}
                                         onBlur={e => e.target.style.borderColor = form.confirmPassword && form.newPassword !== form.confirmPassword ? '#ef4444' : '#e5e7eb'} />
                                     {form.confirmPassword && form.newPassword !== form.confirmPassword && (
-                                        <p style={{ color: '#ef4444', fontSize: '12px', margin: '4px 0 0' }}>Les mots de passe ne correspondent pas</p>
+                                        <p style={{ color: '#ef4444', fontSize: '12px', margin: '4px 0 0' }}>Passwords do not match</p>
                                     )}
                                 </div>
                                 <button onClick={handleChangePassword} disabled={saving}
                                     style={{ padding: '12px 32px', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '700', fontSize: '15px' }}>
-                                    {saving ? 'Modification...' : ' Modifier le mot de passe'}
+                                    {saving ? 'Saving...' : 'Change Password'}
                                 </button>
                             </div>
                         )}
 
-                        {/* ── Section Entreprise ── */}
+                        {/* Company Information */}
                         {activeSection === 'company' && (
                             <div>
-                                <h2 style={{ color: '#1a1a2e', margin: '0 0 24px', fontSize: '1.2rem', fontWeight: '800' }}>
-                                     Informations entreprise
+                                <h2 style={{ color: '#1a1a2e', margin: '0 0 8px', fontSize: '1.2rem', fontWeight: '800' }}>
+                                    Company Information
                                 </h2>
+                                <p style={{ color: '#64748b', fontSize: '13px', marginBottom: '24px' }}>
+                                    This information is used for matchmaking and networking.
+                                </p>
+
+                                {/* Company Name + Type */}
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                                    <div>
+                                        <label style={labelStyle}>Company Name</label>
+                                        <input type="text" value={form.companyName}
+                                            onChange={e => setForm({ ...form, companyName: e.target.value })}
+                                            placeholder="My Company LLC"
+                                            style={inputStyle}
+                                            onFocus={e => e.target.style.borderColor = '#7c3aed'}
+                                            onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
+                                    </div>
+                                    <div>
+                                        <label style={labelStyle}>Organisation Type</label>
+                                        <select value={form.organisationType || ''}
+                                            onChange={e => setForm({ ...form, organisationType: e.target.value })}
+                                            style={{ ...inputStyle, background: 'white' }}>
+                                            <option value="">Select type...</option>
+                                            <option value="Company">Company</option>
+                                            <option value="Start-up">Start-up / Scale-up</option>
+                                            <option value="Association">Association / Agency</option>
+                                            <option value="University">University</option>
+                                            <option value="R&D">R&D Institution</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* Sector + Employees */}
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                                    <div>
+                                        <label style={labelStyle}>Sector / Industry</label>
+                                        <select value={form.sector || ''}
+                                            onChange={e => setForm({ ...form, sector: e.target.value })}
+                                            style={{ ...inputStyle, background: 'white' }}>
+                                            <option value="">Select sector...</option>
+                                            <option value="Agriculture">Agriculture & Food</option>
+                                            <option value="Automotive">Automotive</option>
+                                            <option value="Construction">Construction</option>
+                                            <option value="Energy">Energy & Environment</option>
+                                            <option value="Finance">Finance & Banking</option>
+                                            <option value="Healthcare">Healthcare</option>
+                                            <option value="IT">Information Technology</option>
+                                            <option value="Manufacturing">Manufacturing</option>
+                                            <option value="Marketing">Marketing & Communication</option>
+                                            <option value="Real Estate">Real Estate</option>
+                                            <option value="Retail">Retail & E-commerce</option>
+                                            <option value="Tourism">Tourism & Hospitality</option>
+                                            <option value="Transport">Transport & Logistics</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style={labelStyle}>Number of Employees</label>
+                                        <select value={form.companySize || ''}
+                                            onChange={e => setForm({ ...form, companySize: e.target.value })}
+                                            style={{ ...inputStyle, background: 'white' }}>
+                                            <option value="">Select size...</option>
+                                            <option value="1-10">1 – 10</option>
+                                            <option value="11-50">11 – 50</option>
+                                            <option value="51-200">51 – 200</option>
+                                            <option value="201-500">201 – 500</option>
+                                            <option value="500+">500+</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* Website */}
                                 <div style={{ marginBottom: '16px' }}>
-                                    <label style={labelStyle}>Nom de l'entreprise</label>
-                                    <input type="text" value={form.companyName}
-                                        onChange={e => setForm({ ...form, companyName: e.target.value })}
-                                        placeholder="Ma Societe SARL"
+                                    <label style={labelStyle}>Company Website</label>
+                                    <input type="url" value={form.companyWebsite || ''}
+                                        onChange={e => setForm({ ...form, companyWebsite: e.target.value })}
+                                        placeholder="https://mycompany.com"
                                         style={inputStyle}
                                         onFocus={e => e.target.style.borderColor = '#7c3aed'}
                                         onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
                                 </div>
+
+                                {/* Company Description */}
                                 <div style={{ marginBottom: '16px' }}>
-                                    <label style={labelStyle}>Description de l'entreprise</label>
+                                    <label style={labelStyle}>Company Description</label>
                                     <textarea value={form.companyDescription}
                                         onChange={e => setForm({ ...form, companyDescription: e.target.value })}
-                                        placeholder="Decrivez votre activite, secteur, services..."
-                                        rows={4}
+                                        placeholder="Describe your business, sector, products or services..."
+                                        rows={3}
                                         style={{ ...inputStyle, resize: 'vertical' }}
                                         onFocus={e => e.target.style.borderColor = '#7c3aed'}
                                         onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
                                 </div>
-                                <div style={{ marginBottom: '24px' }}>
-                                    <label style={labelStyle}>Adresse de l'entreprise</label>
+
+                                {/* Company Address */}
+                                <div style={{ marginBottom: '16px' }}>
+                                    <label style={labelStyle}>Company Address</label>
                                     <input type="text" value={form.companyAddress}
                                         onChange={e => setForm({ ...form, companyAddress: e.target.value })}
-                                        placeholder="123 Rue de la Republique, Tunis"
+                                        placeholder="123 Republic Street, Tunis"
                                         style={inputStyle}
                                         onFocus={e => e.target.style.borderColor = '#7c3aed'}
                                         onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
                                 </div>
+
+                                {/* Business Objectives */}
+                                <div style={{ marginBottom: '24px' }}>
+                                    <label style={labelStyle}>Business Objectives</label>
+                                    <p style={{ color: '#94a3b8', fontSize: '12px', margin: '0 0 8px' }}>
+                                        What are you looking for at this event? (used for AI Matchmaking)
+                                    </p>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                                        {[
+                                            'Find investors',
+                                            'Find partners',
+                                            'Find clients',
+                                            'Find suppliers',
+                                            'Explore new markets',
+                                            'Share expertise',
+                                            'Find distributors',
+                                            'Other'
+                                        ].map(obj => {
+                                            const selected = (form.businessObjectives || []).includes(obj);
+                                            return (
+                                                <button key={obj}
+                                                    onClick={() => {
+                                                        const current = form.businessObjectives || [];
+                                                        const updated = selected
+                                                            ? current.filter(o => o !== obj)
+                                                            : [...current, obj];
+                                                        setForm({ ...form, businessObjectives: updated });
+                                                    }}
+                                                    style={{
+                                                        padding: '10px 14px',
+                                                        border: `2px solid ${selected ? '#7c3aed' : '#e5e7eb'}`,
+                                                        borderRadius: '10px',
+                                                        background: selected ? '#ede9fe' : 'white',
+                                                        color: selected ? '#7c3aed' : '#64748b',
+                                                        cursor: 'pointer',
+                                                        fontWeight: '600',
+                                                        fontSize: '13px',
+                                                        textAlign: 'left'
+                                                    }}>
+                                                    {selected ? '✓ ' : ''}{obj}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
                                 <button onClick={handleSavePersonal} disabled={saving}
                                     style={{ padding: '12px 32px', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '700', fontSize: '15px' }}>
-                                    {saving ? 'Sauvegarde...' : ' Sauvegarder'}
+                                    {saving ? 'Saving...' : 'Save'}
                                 </button>
                             </div>
                         )}
+
                     </div>
                 </div>
             </div>

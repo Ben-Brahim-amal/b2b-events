@@ -18,13 +18,13 @@ class UploadController extends AbstractController
         $file = $request->files->get('file');
 
         if (!$file) {
-            return $this->json(['error' => 'Aucun fichier recu.'], 400);
+            return $this->json(['error' => 'No file received.'], 400);
         }
 
         // Vérifier le type
         $allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         if (!in_array($file->getMimeType(), $allowedTypes)) {
-            return $this->json(['error' => 'Type de fichier non autorise.'], 400);
+            return $this->json(['error' => 'File type not allowed.'], 400);
         }
 
         // Générer un nom unique

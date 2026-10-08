@@ -29,11 +29,20 @@ class ParticipantController extends AbstractController
             'email' => $u->getEmail(),
             'userRole' => $u->getUserRole(),
             'bio' => $u->getBio(),
-            // Pour l'instant on n'a pas de photo, on met un avatar par défaut
-            'avatar' => null,
-            'company' => $u->getUserRole() === 'ROLE_ENTREPRENEUR' ? 'Entrepreneur' : 
-                        ($u->getUserRole() === 'ROLE_INVESTISSEUR' ? 'Investisseur' : 'Organisateur'),
-            'country' => 'Tunisie', // tu pourras ajouter un champ country plus tard
+            'avatar' => $u->getAvatar(),
+            'country' => $u->getCountry(),
+            'linkedin' => $u->getLinkedin(),
+            'phone' => $u->getPhone(),
+            'company' => $u->getCompanyName(),
+            'companyName' => $u->getCompanyName(),
+            'companyDescription' => $u->getCompanyDescription(),
+            'companyAddress' => $u->getCompanyAddress(),
+            'companyWebsite' => $u->getCompanyWebsite(),
+            'companySize' => $u->getCompanySize(),
+            'organisationType' => $u->getOrganisationType(),
+            'sector' => $u->getSector(),
+            'sectors' => $u->getSectors(),
+            'businessObjectives' => $u->getBusinessObjectives(),
         ], $users);
 
         return $this->json($data);
