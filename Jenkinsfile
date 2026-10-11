@@ -15,8 +15,8 @@ pipeline {
             steps {
                 echo 'Building Symfony backend...'
                 sh '''
-                    docker exec b2b_php composer install --no-interaction
-                    docker exec b2b_php php bin/console cache:clear --env=prod
+                    docker exec b2b_php composer install --no-interaction --no-scripts
+                    docker exec b2b_php php bin/console cache:clear --env=prod --no-warmup
                     docker exec b2b_php php bin/console cache:warmup --env=prod
                 '''
             }
